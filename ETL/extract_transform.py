@@ -1,6 +1,9 @@
 from pyspark.sql import SparkSession
 from pyspark import SparkContext, SparkConf
-from pyspark.sql.functions import flatten
+
+from pyspark.sql.functions import to_timestamp, col
+
+
 
 # #build a spark session
 # #wget https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.1.2/hadoop-aws-3.1.2.jar
@@ -14,15 +17,23 @@ from pyspark.sql.functions import flatten
 # #write locally to a file
 # df.write.format('json').save("capstone.json")
 
-spark = SparkSession.bulder.getOrCreate()
+spark = SparkSession.builder.getOrCreate()
 df = spark.read.json("capstone.json")
 
 #df.show()
-df.printSchema()
-df_flattened = df.select("city", 
+#df.printSchema()
+df_transformed = (df.select("city", 
                         "coordinates.latitude","coordinates.latitude", 
                         "country", 
                         "date.local", "date.utc", 
                         "entity", "isAnalysis", "isMobile", "location", "locationId", "parameter", "sensorType", "unit", "value")
-df_flattened.show()
+                        .withColumn("local_time", to_timestamp("local", "yyyy_MM_dd HH_mm_ss"))
+                        .withColumn("utc_time", to_timestamp("utc", "yyyy_MM_dd HH_mm_ss"))
+                        .drop("local","utc")
+                        )
+
+df_transformed.show()
+df_transformed.printSchema()
+
+
 
