@@ -1,6 +1,8 @@
-
-import pyspark.sql.functions as psf
+import pyspark
 from pyspark.sql import SparkSession
+from pyspark import SparkContext, SparkConf
+
+
 
 #build a spark session
 spark = SparkSession.builder.getOrCreate()
