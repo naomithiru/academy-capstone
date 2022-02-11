@@ -34,7 +34,7 @@ def transform(frame: DataFrame) -> DataFrame:
 
 
 def get_secret(name: str) -> Dict[str, str]:
-    client = boto3.client('secretsmanager')
+    client = boto3.client('secretsmanager', region_name='eu-west-1')
     response = client.get_secret_value(SecretId=name)
 
     return json.loads(response['SecretString'])
@@ -72,3 +72,5 @@ if __name__ == "__main__":
         .mode("overwrite")
         .save()
     )
+
+    
